@@ -1,4 +1,4 @@
-:- module(mod_ui, [init_ui/0, game_ia/0, play/0, welcome/0]).
+:- module(mod_ui, [init_ui/0, game_ia/2, play/0, ask_id/1]).
 :- use_module('jeu.pl').
 :- use_module('regles.pl').
 :- use_module('evaluation.pl').
@@ -83,6 +83,10 @@ id_move(7, 1, 3).
 id_move(8, C2, 3) :-
     member(C2, [2, 6]).
 
+getLevel(1, 'Facile').
+getLevel(2, 'Moyen').
+getLevel(3, 'Difficle').
+
 
 % Sauvegarde le coup joué
 save_play(Joueur,Coup) :-
@@ -91,23 +95,23 @@ save_play(Joueur,Coup) :-
     assert(board(B1)).
 
 % IA vs. IA
-game_ia(P1, P2) :-
+game_ia(Level1, Level2, P1, P2) :-
     board(PL),
-    alpha_beta(1, 6, PL, -200, 200, Coup, P1, _Valeur), !,
+    alpha_beta(1, 5, PL, -200, 200, Coup, P1, _Valeur), !,
     save_play(1, Coup),
     board(NPL),
-    display_board(1, NPL),
+    display_board(1, Level1, NPL),
     not(won),
-    alpha_beta(2, 6, NPL, -200, 200, Coup2, P2, _Valeur2),!,
+    alpha_beta(2, 5, NPL, -200, 200, Coup2, P2, _Valeur2),!,
     save_play(2, Coup2),
     board(NPL2),
-    display_board(2, NPL2),
+    display_board(2, Level2, NPL2),
     not(won),
-    game_ia(PL, NPL).
+    game_ia(Level1, Level2, PL, NPL).
 
-game_ia :-
+game_ia(Level1, Level2):-
     empty_board(Board),
-    game_ia(Board, Board).
+    game_ia(Level1, Level2, Board, Board).
 
 % Fait jouer l'IA
 play_ia(P1, Level) :-
@@ -116,7 +120,7 @@ play_ia(P1, Level) :-
     alpha_beta(1, Level1, PL, -200, 200, Coup, P1, _Valeur), !,
     save_play(1, Coup),
     board(NPL),
-    display_board(1, NPL),
+    display_board(1, Level, NPL),
     not(won),
     play(PL, Level).
 
@@ -126,12 +130,12 @@ play(LastBoard, Level) :-
     ask_placement(PL, Coup),
     save_play(2, Coup),
     board(NPL),
-    display_board(2, NPL),
+    display_board(2, -1, NPL),
     not(won),
     play_ia(LastBoard, Level).
 
 play :-
-    writeln('Niveau de l\'IA :'),
+    writeln('Niveau (IA) :'),
     writeln('\t0.\tFacile'),
     writeln('\t1.\tMoyen'),
     writeln('\t2.\tDifficile'),
@@ -147,10 +151,23 @@ won :-
     init_ui, !.
 
 % Affiche le plateau de jeu
-display_board(J, [C1, C2, C3, C4, C5, C6, C7, C8, C9]):-
+display_board(J, IDLevel, [C1, C2, C3, C4, C5, C6, C7, C8, C9]):-
+    IDLevel \= -1, !,
+    getLevel(IDLevel, Level),
     write('    _______'), nl,
     write('    |'), afc(C1), write(' '), afc(C2), write(' '), afc(C3), write('|'), nl,
-    write(' '), write(J), write('  |'), afc(C4), write(' '), afc(C5), write(' '), afc(C6), write('|'), nl,
+    write(' '), write(J),
+    write('  |'), afc(C4), write(' '), afc(C5), write(' '), afc(C6), write('|'),
+    write('\tNiveau (IA) '), write(Level), nl,
+    write('    |'), afc(C7), write(' '), afc(C8), write(' '), afc(C9), write('|'), nl,
+    write('    -------'), nl, nl.
+
+display_board(J, -1, [C1, C2, C3, C4, C5, C6, C7, C8, C9]):-
+    !,
+    write('    _______'), nl,
+    write('    |'), afc(C1), write(' '), afc(C2), write(' '), afc(C3), write('|'), nl,
+    write(' '), write(J),
+    write('  |'), afc(C4), write(' '), afc(C5), write(' '), afc(C6), write('|'), nl,
     write('    |'), afc(C7), write(' '), afc(C8), write(' '), afc(C9), write('|'), nl,
     write('    -------'), nl, nl.
 
@@ -174,14 +191,3 @@ afc(1) :-
     write('o').
 afc(2):-
     write('x').
-
-% Welcome prompt
-welcome :-
-    nl,
-    writeln('Projet Force 3'),
-    writeln('Créé dans le cadre du cours IA41 (UTBM)'), nl,
-    writeln('J  vs. IA :\t play.'),
-    writeln('IA vs. IA :\t game_ia.'),
-    nl.
-
-:- init_ui.
