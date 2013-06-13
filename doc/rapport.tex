@@ -125,7 +125,7 @@ Bien qu'étant une estimation \emph{à la louche}, $15^{15}$ coups sont impossib
 \subsection{Observations}
 \begin{itemize}
 	\item Le \emph{Force 3} est un jeu à somme nulle (La somme des gains des deux joueurs est nulle).
-	\item Il ne faut pas seulement chercher à gagner, il faut également que éviter que l'adversaire ne gagne avant nous.
+	\item Il ne faut pas seulement chercher à gagner, il faut également éviter que l'adversaire ne gagne avant nous.
 \end{itemize}
 
 \newpage
@@ -140,7 +140,7 @@ Au vue des observations précédentes, nous avons choisi d'utiliser un algorithm
 
 \subsection{Fonction d'évaluation}
 \subsubsection{Attribution des points}
-Un plateau est constitué de 3 \emph{lignes} verticales, 3 \emph{lignes} horizontales et de 3 lignes \emph{diagonales}. La fonction d'évaluation assigne un score par ligne en fonction du nombre de pions qui y sont présents:
+Un plateau est constitué de 3 \emph{lignes} verticales, 3 \emph{lignes} horizontales et de 2 lignes \emph{diagonales}. La fonction d'évaluation assigne un score par ligne en fonction du nombre de pions qui y sont présents:
 \vspace{1em} % hack
 \begin{itemize}
 	\item Un pion : 1 point
@@ -243,9 +243,9 @@ int negaMax( int depth ) {
 \end{figure}
   
 \subsubsection{Élagage Alpha/Beta}
-Un des soucis d'un tel algorithme est qu'il \emph{requiert beaucoup de place}. En effet, il va parcourir toutes les branches de l'arbre de recherche, alors que ça n'est pas forcément nécessaire. On peut l'optimiser à l'aide d'un élagage de type $\alpha\beta$ (Alpha/Beta), qui permet de réduire manière conséquente le nombre de n\oe{}ds parcourus, sans pour autant changer quoi que ce soit au résultat final.
+Un des soucis d'un tel algorithme est qu'il \emph{requiert beaucoup de place}. En effet, il va parcourir toutes les branches de l'arbre de recherche, alors que ça n'est pas forcément nécessaire. On peut l'optimiser à l'aide d'un élagage de type $\alpha\beta$ (Alpha/Beta), qui permet de réduire de manière conséquente le nombre de n\oe{}ds parcourus, sans pour autant changer quoi que ce soit au résultat final.
 \\\\
-Sur la figure 6 on peut constater que certaines branches sont superflues. Par exemple, le n\oe{}d de profondeur 1 à droite (5) va prendre la valeur minimum de ses fils. Sachant qu'un 5 est présent, on peut se permettre d'élaguer la branche de droite à partir du n\oe{}d 8, de profondeur 2, puisque 5 est inférieur à 8.
+Sur la figure 6 on peut constater que certaines branches sont superflues. Par exemple, le n\oe{}d de profondeur 1 à droite (5) va prendre la valeur minimum de ses fils. Sachant qu'un 5 est présent, on peut se permettre d'élaguer la branche de droite à partir du n\oe{}ud 8, de profondeur 2, puisque 5 est inférieur à 8.
 
 \subsection{Exemple}
 \begin{figure}[H]
@@ -280,7 +280,7 @@ Le \emph{Makefile} fourni permet de compiler le programme et de le lancer. Le pr
 
 \subsection{Représentation des données}
 \subsubsection{Plateau}
-Le plateau est une grille de 3x3 cases, dont l'emplacement central est \emph{vide} en début de partie.
+Le plateau est une grille de $3 * 3$ cases, dont l'emplacement central est \emph{vide} en début de partie.
 Le grille est donc représentée comme une liste de 9 éléments pouvant être:
   \begin{description}
     \item[0]  Case vide
@@ -303,42 +303,42 @@ Le plateau initial est instancié ainsi:\\
   \end{figure}
 
 \subsubsection{Coup}
-Les règles du Force 3 ont été transcrites en un seul prédicat : \textbf{deplacement/3 (+Joueur, +Plateau, -[Case1, Case2, IdMouvement])}. Il définit les conditions particulières associées à chaque type de coup (pose d'un pion, déplacement d'un pion, déplacement d'un case, déplacement de deux cases).
+Les règles du Force 3 ont été transcrites en un seul prédicat : \textbf{deplacement/3 (+Joueur, +Plateau, -[Case1, Case2, IdMouvement])}. Il définit les conditions particulières associées à chaque type de coup (pose d'un pion, déplacement d'un pion, déplacement d'une case, déplacement de deux cases).
 
 Ce prédicat est ensuite utilisé dans \texttt{mod\_jeu.pl} où les prédicats de mouvement \textbf{move/4 (+JR, +PL, +[C1,C2,ID], ?NPL).} effectuent la modification réelle du plateau.
 
 \subsection{Interface utilisateur}
-    L'interface utilisateur a été codée en Prolog, en mode texte, à l'aide de prédicats dynamiques, et de
-    ces trois prédicats:
+L'interface utilisateur a été codée en Prolog, en mode texte, à l'aide de prédicats dynamiques, et de
+ces trois prédicats:
 
-  \begin{enumerate}
+\begin{enumerate}
     \item \textbf{play} : faire jouer l'utilisateur.
     \item \textbf{play\_ia} : faire jouer l'IA.
     \item \textbf{game\_ia} : faire jouer l'IA contre l'IA.
-  \end{enumerate}
-  Les diff\'erentes entit\'es sont alors repr\'esent\'ees ainsi :
+\end{enumerate}
+Les différentes entités sont alors représentées ainsi :
 
-  \begin{itemize}
-    \item{'\texttt{ }' : repr\'esente une case ne portant pas de pion}
-    \item{'\texttt{\#}' : repr\'esente la case vide 'taquin'}
-    \item{'\texttt{o}' : repr\'esente un pion du joueur 1}
-    \item{'\texttt{x}' : repr\'esente un pion du joueur 2}
-  \end{itemize}
+\begin{itemize}
+    \item{'\texttt{ }' : représente une case ne portant pas de pion}
+    \item{'\texttt{\#}' : représente la case vide 'taquin'}
+    \item{'\texttt{o}' : représente un pion du joueur 1}
+    \item{'\texttt{x}' : représente un pion du joueur 2}
+\end{itemize}
 
-  Par exemple, voici ce que donne un plateau de jeu initial et une possibilité de plateau gagnant pour le joueur 1 :
-  \begin{figure}[H]
-  \begin{verbatim}
+Par exemple, voici ce que donne un plateau de jeu initial et une possibilité de plateau gagnant pour le joueur 1 :
+\begin{figure}[H]
+    \begin{verbatim}
                _____                   _____
               |     |                 |o # x|
               |  #  |                 |  o x|
               |     |                 |    o|
                -----                   -----
-  \end{verbatim}
-  \caption{Plateau initial et plateau gagnant}
-  \end{figure}
+    \end{verbatim}
+    \caption{Plateau initial et plateau gagnant}
+\end{figure}
   
 \section{Résultats}
-Nous n'arrivons pas à battre l'IA, même avec un papier et un crayon. L'implémentation d'un élagage s'est fait impérieusement sentir pour des profondeurs au delà de 6 (Même pour des valeurs de stack très grandes). Nous avons dû augmenter la taille de la stack de SWI-Prolog a 2048Mo pour faire des benchmark. Plus la profondeur est grande, plus l'IA est intelligente, notre implémentation semble fonctionner.
+Nous n'arrivons pas à battre l'IA, même avec un papier et un crayon. L'implémentation d'un élagage s'est fait impérieusement sentir pour des profondeurs au delà de 6 (Même pour des valeurs de stack très grandes). Nous avons dû augmenter la taille de la stack de SWI-Prolog a 2048Mo pour faire des benchmark. Plus la profondeur est grande, plus l'IA est intelligente, notre implémentation fonctionne.
 
 \section{Outils et méthodes de développement}
 \subsection{Outils}

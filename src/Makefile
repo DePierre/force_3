@@ -1,5 +1,5 @@
-SOURCE=play.pl
-TARGET=play
+SOURCE=main.pl
+TARGET=main
 
 all: $(TARGET)
 

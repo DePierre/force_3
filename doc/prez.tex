@@ -10,10 +10,13 @@
 \usepackage{palatino}
 
 \usetheme{Luebeck}
+
+\useoutertheme{infolines}
+
 \setbeamertemplate{navigation symbols}{}
 \title{IA41 - Force 3}
 \subtitle{Soutenance de projet}
-\author{Tao Sauvage \and Julien Voisin \and Robin Faury}
+\author[]{Tao Sauvage \and Julien Voisin \and Robin Faury}
 \institute[UTBM]{Université de Technologie de Belfort Montbéliard}
 \logo{\includegraphics[width=.05\textwidth]{./pix/sym_plateau}}
 
@@ -21,11 +24,11 @@
 \item[#1] \scriptsize #2 \normalsize
 }
 
-
 \AtBeginSection{
-  \begin{frame}{Plan}
+  \begin{frame}{Plan}<beamer>
     \tableofcontents[currentsection,currentsubsection]
   \end{frame}
+  \addtocounter{framenumber}{-1}
 }
 
 \begin{document}
@@ -142,16 +145,25 @@
 
 \section{Choix d’implémentation}
     \begin{frame}{Modules}
+        \begin{columns}
+        \begin{column}{.2\textwidth}
+            \includegraphics[width=1\textwidth]{./pix/sym_puzzle}
+        \end{column}
+        \begin{column}{.8\textwidth}
+
   \begin{itemize}
-    \item \textbf{evaluation.pl} Évaluation, NégaMax, Alpha/Beta
+    \item \textbf{evaluation.pl} Éval, NégaMax, Alpha/Beta
     \item \textbf{gui.pl} Affichages et interactions.
     \item \textbf{jeu.pl} Prédicats des coups.
-    \item \textbf{regles.pl} Règles du jeu et conditions de victoire.
+    \item \textbf{regles.pl} Règles et conditions de victoire.
     \item \textbf{main.pl} Lance le jeu.
   \end{itemize}
-    \end{frame}
+        \end{column}
+    \end{columns}
+\end{frame}
 
 \begin{frame}{Représentation des données}
+\vspace{-.65cm}
     \begin{block}{Coup}
           Liste: \texttt{[Case départ, Case arrivée, Id]}
     \end{block}
