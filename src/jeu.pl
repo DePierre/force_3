@@ -1,5 +1,5 @@
 :- module(mod_jeu,[empty_board/1, setBoard/4, move/4, get_opponent/2]).
-:- use_module('mod_regles.pl').
+:- use_module('regles.pl').
 
 % Initialisation Plateau vide
 empty_board([0, 0, 0, 0, -1, 0, 0, 0, 0]).

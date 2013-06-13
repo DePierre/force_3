@@ -1,7 +1,7 @@
 :- module(mod_ui, [init_ui/0, game_ia/2, play_ia/1, play/0, welcome/0]).
-:- use_module('mod_jeu.pl').
-:- use_module('mod_regles.pl').
-:- use_module('mod_eval.pl').
+:- use_module('jeu.pl').
+:- use_module('regles.pl').
+:- use_module('evaluation.pl').
 
 % Stock l'état du plateau de jeu
 :- dynamic board/1.

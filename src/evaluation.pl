@@ -1,6 +1,6 @@
 :- module(mod_eval,[eval_nb_move/3,eval_bord/2, alpha_beta/8]).
-:- use_module('mod_regles.pl').
-:- use_module('mod_jeu.pl').
+:- use_module('regles.pl').
+:- use_module('jeu.pl').
 :- use_module(library(lists)).
 
 % eval_nb_move(+J, +P, ?NbM)
@@ -94,4 +94,4 @@ pruning(J,Move, ForbidP, Value,Depth,Alpha,Beta,Moves,P,_R,BestMove) :-
 pruning(J,_Move, ForbidP, Value,Depth,Alpha,Beta,Moves,P,R,BestMove) :-
     Value =< Alpha, !,
     find_best(J,Moves,P,Depth,Alpha,Beta,R, ForbidP, BestMove), !.
-pruning(_J, Move, _, Value, _Depth, _Alpha, Beta, _Moves, _P, _R, (Move, Value)).
+pruning(_J, Move, _, Value, _Depth, _Alpha, _Beta, _Moves, _P, _R, (Move, Value)).
