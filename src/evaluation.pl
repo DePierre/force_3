@@ -50,7 +50,8 @@ compute_points(J, List, Score) :-
 % Retourne le score associé au nombre de pionts alignés.
 score(0, 0) :- !.
 score(1, 1) :- !.
-score(2, 5).
+score(2, 5) :- !.
+score(3, 100).
 
 
 % alpha_beta(+J, +Depth, +P, +Alpha, +Beta, ?Move, +ForbidP, ?Value)
@@ -58,7 +59,7 @@ score(2, 5).
 % Depth est la profondeur de recherche avec Value la valeur du plateau
 % lorsque le coup est joué.
 alpha_beta(_J, 0, P, _Alpha, _Beta, _Move, _ForbidP, Value) :-
-    eval_bord(P, Value), !.
+    !, eval_bord(P, Value).
 
 alpha_beta(J, Depth, P, Alpha, Beta, Move, P, Value) :-
     !, findall(X, move(J, P, X, _), Moves),
@@ -90,8 +91,8 @@ find_best(J, [Move|Moves], P, Depth, Alpha, Beta, R, ForbidP, BestMove) :-
 pruning(J,Move, ForbidP, Value,Depth,Alpha,Beta,Moves,P,_R,BestMove) :-
     Alpha < Value,
     Value < Beta, !,
-    find_best(J,Moves,P,Depth,Value,Beta,Move, ForbidP, BestMove),!.
+    find_best(J,Moves,P,Depth,Value,Beta,Move, ForbidP, BestMove).
 pruning(J,_Move, ForbidP, Value,Depth,Alpha,Beta,Moves,P,R,BestMove) :-
     Value =< Alpha, !,
-    find_best(J,Moves,P,Depth,Alpha,Beta,R, ForbidP, BestMove), !.
+    find_best(J,Moves,P,Depth,Alpha,Beta,R, ForbidP, BestMove).
 pruning(_J, Move, _, Value, _Depth, _Alpha, _Beta, _Moves, _P, _R, (Move, Value)).
