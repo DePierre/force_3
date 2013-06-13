@@ -10,10 +10,13 @@
 \usepackage{palatino}
 
 \usetheme{Luebeck}
+
+\useoutertheme{infolines}
+
 \setbeamertemplate{navigation symbols}{}
 \title{IA41 - Force 3}
 \subtitle{Soutenance de projet}
-\author{Tao Sauvage \and Julien Voisin \and Robin Faury}
+\author[]{Tao Sauvage \and Julien Voisin \and Robin Faury}
 \institute[UTBM]{Université de Technologie de Belfort Montbéliard}
 \logo{\includegraphics[width=.05\textwidth]{./pix/sym_plateau}}
 
@@ -21,11 +24,11 @@
 \item[#1] \scriptsize #2 \normalsize
 }
 
-
 \AtBeginSection{
-  \begin{frame}{Plan}
+  \begin{frame}{Plan}<beamer>
     \tableofcontents[currentsection,currentsubsection]
   \end{frame}
+  \addtocounter{framenumber}{-1}
 }
 
 \begin{document}
