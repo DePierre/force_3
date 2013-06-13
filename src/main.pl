@@ -49,4 +49,4 @@ start(1) :-
 start(_) :- !.
 
 % Lance le menu
-:- main.
+:- set_prolog_stack(global, limit(2*10**9)), main.
