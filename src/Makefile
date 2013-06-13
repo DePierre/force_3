@@ -3,8 +3,11 @@ TARGET=main
 
 all: $(TARGET)
 
-$(TARGET): $(SOURCE)
-	swipl -o $@ -O -c $<
+$(TARGET): *.pl
+	swipl -o $@ -O -c $(SOURCE)
+
+play: $(TARGET)
+	swipl -s main.pl
 
 clean:
 	@rm -Rf a.out $(TARGET)

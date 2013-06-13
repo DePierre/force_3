@@ -155,33 +155,33 @@ won :-
 display_board(J, IDLevel, [C1, C2, C3, C4, C5, C6, C7, C8, C9]):-
     IDLevel \= -1, !,
     getLevel(IDLevel, Level),
-    write('    _______'), nl,
+    write('     _____'), nl,
     write('    |'), afc(C1), write(' '), afc(C2), write(' '), afc(C3), write('|'), nl,
     write(' '), write(J),
     write('  |'), afc(C4), write(' '), afc(C5), write(' '), afc(C6), write('|'),
     write('\tNiveau (IA) '), write(Level), nl,
     write('    |'), afc(C7), write(' '), afc(C8), write(' '), afc(C9), write('|'), nl,
-    write('    -------'), nl, nl.
+    write('     -----'), nl, nl.
 
 display_board(J, -1, [C1, C2, C3, C4, C5, C6, C7, C8, C9]):-
     !,
-    write('    _______'), nl,
+    write('     _____'), nl,
     write('    |'), afc(C1), write(' '), afc(C2), write(' '), afc(C3), write('|'), nl,
     write(' '), write(J),
     write('  |'), afc(C4), write(' '), afc(C5), write(' '), afc(C6), write('|'), nl,
     write('    |'), afc(C7), write(' '), afc(C8), write(' '), afc(C9), write('|'), nl,
-    write('    -------'), nl, nl.
+    write('     -----'), nl, nl.
 
 % Affiche les coordonnées du plateau
 display_coords([C1, C2, C3, C4, C5, C6, C7, C8, C9]):-
-    write('    _______                         _______'), nl,
+    write('     _____                           _____'), nl,
     write('    |'), afc(C1), write(' '), afc(C2), write(' '), afc(C3), write('|'),
     write('                         |0 1 2|'),nl,
     write('    |'), afc(C4), write(' '), afc(C5), write(' '), afc(C6), write('|'),
     write('     Coordonnees     --> |3 4 5|'), nl,
     write('    |'), afc(C7), write(' '), afc(C8), write(' '), afc(C9), write('|'),
     write('                         |6 7 8|'), nl,
-    write('    -------                         -------'), nl, !.
+    write('     -----                           -----'), nl, !.
 
 % Affecte les cases en fonction de leur nature
 afc(0) :-
