@@ -83,9 +83,9 @@ id_move(7, 1, 3).
 id_move(8, C2, 3) :-
     member(C2, [2, 6]).
 
-getLevel(1, 'Facile').
-getLevel(2, 'Moyen').
-getLevel(3, 'Difficle').
+getLevel(0, 'Facile').
+getLevel(1, 'Moyen').
+getLevel(2, 'Difficile').
 
 
 % Sauvegarde le coup joué
@@ -95,23 +95,25 @@ save_play(Joueur,Coup) :-
     assert(board(B1)).
 
 % IA vs. IA
-game_ia(Level1, Level2, P1, P2) :-
+game_ia(Level1, Level2, LevelIA1, LevelIA2, P1, P2) :-
     board(PL),
-    alpha_beta(1, 5, PL, -200, 200, Coup, P1, _Valeur), !,
+    alpha_beta(1, LevelIA1, PL, -200, 200, Coup, P1, _Valeur), !,
     save_play(1, Coup),
     board(NPL),
     display_board(1, Level1, NPL),
     not(won),
-    alpha_beta(2, 5, NPL, -200, 200, Coup2, P2, _Valeur2),!,
+    alpha_beta(2, LevelIA2, NPL, -200, 200, Coup2, P2, _Valeur2), !,
     save_play(2, Coup2),
     board(NPL2),
     display_board(2, Level2, NPL2),
     not(won),
-    game_ia(Level1, Level2, PL, NPL).
+    game_ia(Level1, Level2, LevelIA1, LevelIA2, PL, NPL).
 
 game_ia(Level1, Level2):-
     empty_board(Board),
-    game_ia(Level1, Level2, Board, Board).
+    LevelIA1 is (Level1 + 2) * 3,
+    LevelIA2 is (Level2 + 2) * 3,
+    game_ia(Level1, Level2, LevelIA1, LevelIA2, Board, Board).
 
 % Fait jouer l'IA
 play_ia(P1, Level) :-

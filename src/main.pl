@@ -16,6 +16,7 @@ welcome :-
 level_ia :-
     menu_ia(1, Level1),
     menu_ia(2, Level2),
+    tty_clear,
     game_ia(Level1, Level2).
 
 menu_ia(ID, Level) :-
@@ -37,6 +38,7 @@ main :-
     writeln('|  2.\tQuitter              |'),
     writeln('------------------------------'),
     ask_id(Choix),
+    tty_clear,
     start(Choix).
 
 % Lance en fonction du choix du joueur
