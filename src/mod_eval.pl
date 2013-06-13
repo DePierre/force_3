@@ -10,7 +10,6 @@ eval_nb_move(J, P, NbM) :-
     length(ListeMove, NbM).
 
 
-
 % eval_bord(+P, ?Value)
 % Permet de déterminer l'avantage d'un des deux joueurs.
 % Si la valeur de retour est positif, alors le joueur 1 à l'avantage. Et vise versa.
@@ -19,7 +18,6 @@ eval_bord(P, 100) :-
     win(1, P), !.
 eval_bord(P, -100) :-
     win(2, P), !.
-
 eval_bord(P, V) :-
     eval_value(1, P, ValueJ1),
     eval_value(2, P, ValueJ2),
@@ -50,8 +48,8 @@ compute_points(J, List, Score) :-
 
 % score(+NbPions, ?score)
 % Retourne le score associé au nombre de pionts alignés.
-score(0, 0).
-score(1, 1).
+score(0, 0) :- !.
+score(1, 1) :- !.
 score(2, 5).
 
 
@@ -62,30 +60,28 @@ score(2, 5).
 alpha_beta(_J, 0, P, _Alpha, _Beta, _Move, _ForbidP, Value) :-
     eval_bord(P, Value), !.
 
+alpha_beta(J, Depth, P, Alpha, Beta, Move, P, Value) :-
+    !, findall(X, move(J, P, X, _), Moves),
+    Alpha1 is -Beta, % max/min
+    Beta1 is -Alpha,
+    find_best(J, Moves, P, Depth, Alpha1, Beta1, nil, P, (Move, Value)).
+
 alpha_beta(J, Depth, P, Alpha, Beta, Move, ForbidP, Value) :-
     findall(X, move(J, P, X, _), Moves),
     Alpha1 is -Beta, % max/min
     Beta1 is -Alpha,
     Depth1 is Depth - 1,
-    find_best(J, Moves, P, Depth1, Alpha1, Beta1, nil, ForbidP, (Move, Value)),
-    P \= ForbidP, !.
-
-alpha_beta(J, Depth, P, Alpha, Beta, Move, P, Value) :-
-    findall(X, move(J, P, X, _), Moves),
-    Alpha1 is -Beta, % max/min
-    Beta1 is -Alpha,
-    find_best(J, Moves, P, Depth, Alpha1, Beta1, nil, P, (Move, Value)), !.
+    find_best(J, Moves, P, Depth1, Alpha1, Beta1, nil, ForbidP, (Move, Value)).
 
 % find_best(+J,+Moves,+P,+Depth,+Alpha,+Beta,+R,?BestMove)
 % Retourne le meilleur coup à jouer.
+find_best(_J, [], _P, _Depth, Alpha, _Beta, Move, _, (Move,Alpha)) :- !.
 find_best(J, [Move|Moves], P, Depth, Alpha, Beta, R, ForbidP, BestMove) :-
     move(J, P, Move, NP),
     get_opponent(J, OtherJR),
     alpha_beta(OtherJR, Depth, NP, Alpha, Beta, _OtherCoup, ForbidP, Value),
     Value1 is -Value,
-    pruning(J,Move, ForbidP, Value1,Depth,Alpha,Beta,Moves,P,R,BestMove), !.
-
-find_best(_J, [], _P, _Depth, Alpha, _Beta, Move, _, (Move,Alpha)).
+    pruning(J,Move, ForbidP, Value1,Depth,Alpha,Beta,Moves,P,R,BestMove).
 
 
 % pruning(+J,+Move,+Value,+Depth,+Alpha,+Beta,+Moves,+P,+_R,+BestMove)
@@ -95,9 +91,7 @@ pruning(J,Move, ForbidP, Value,Depth,Alpha,Beta,Moves,P,_R,BestMove) :-
     Alpha < Value,
     Value < Beta, !,
     find_best(J,Moves,P,Depth,Value,Beta,Move, ForbidP, BestMove),!.
-
 pruning(J,_Move, ForbidP, Value,Depth,Alpha,Beta,Moves,P,R,BestMove) :-
     Value =< Alpha, !,
     find_best(J,Moves,P,Depth,Alpha,Beta,R, ForbidP, BestMove), !.
-pruning(_J, Move, _, Value, _Depth, _Alpha, Beta, _Moves, _P, _R, (Move, Value)) :-
-    Value >= Beta, !.
+pruning(_J, Move, _, Value, _Depth, _Alpha, Beta, _Moves, _P, _R, (Move, Value)).
