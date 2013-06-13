@@ -3,17 +3,17 @@
                       deplacement/3]).
 
 % Trois pions alignés sur une ligne
-win(JR, [JR,JR,JR,_,_,_,_,_,_]) :- JR \= 0.
-win(JR, [_,_,_,JR,JR,JR,_,_,_]) :- JR \= 0.
-win(JR, [_,_,_,_,_,_,JR,JR,JR]) :- JR \= 0.
+win(JR, [JR,JR,JR,_,_,_,_,_,_]) :- JR \= 0, !.
+win(JR, [_,_,_,JR,JR,JR,_,_,_]) :- JR \= 0, !.
+win(JR, [_,_,_,_,_,_,JR,JR,JR]) :- JR \= 0, !.
 
 % Trois pions alignés sur une colonne
-win(JR, [JR,_,_,JR,_,_,JR,_,_]) :- JR \= 0.
-win(JR, [_,JR,_,_,JR,_,_,JR,_]) :- JR \= 0.
-win(JR, [_,_,JR,_,_,JR,_,_,JR]) :- JR \= 0.
+win(JR, [JR,_,_,JR,_,_,JR,_,_]) :- JR \= 0, !.
+win(JR, [_,JR,_,_,JR,_,_,JR,_]) :- JR \= 0, !.
+win(JR, [_,_,JR,_,_,JR,_,_,JR]) :- JR \= 0, !.
 
 % Trois pions alignés sur une diagonale
-win(JR, [JR,_,_,_,JR,_,_,_,JR]) :- JR \= 0.
+win(JR, [JR,_,_,_,JR,_,_,_,JR]) :- JR \= 0, !.
 win(JR, [_,_,JR,_,JR,_,JR,_,_]) :- JR \= 0.
 
 % La position du taquin permet de savoir quelles cases
@@ -107,7 +107,7 @@ column(PL, J, [E1, E2, E3]) :-
 
 % Unifie la séquence [E1, E2, E3] avec la Nème diagonale du plateau PL
 diagonal(PL, 1, [E1,E2,E3]) :-
-    nth1(1, PL, E1),
+    !, nth1(1, PL, E1),
     nth1(5, PL, E2),
     nth1(9, PL, E3).
 
@@ -152,13 +152,13 @@ deplacement(JR, [C0, C1, C2, C3, C4, C5, C6, C7, 0|R], [-1, 8, 0]) :-
 
 % Déplacement d'un pion déjà posé sur le plateau sur l'une des 9 cases.
 deplacement(JR, PL, [CA, CS, 1]) :-
-    get_neighbour(CA, CS),
+    !, get_neighbour(CA, CS),
     nth0(CA, PL, JR),
     nth0(CS, PL, 0).
 
 % Déplacement d'une case CA vers CS
 deplacement(_, PL, [CA, CS, 2]) :-
-    taquin_for(CA, CS),
+    !, taquin_for(CA, CS),
     nth0(CA, PL, -1).
 
 % Déplacement de deux cases

@@ -1,7 +1,7 @@
 :- module(mod_ui, [init_ui/0, game_ia/0, play/0, welcome/0]).
-:- use_module('mod_jeu.pl').
-:- use_module('mod_regles.pl').
-:- use_module('mod_eval.pl').
+:- use_module('jeu.pl').
+:- use_module('regles.pl').
+:- use_module('evaluation.pl').
 
 % Stock l'état du plateau de jeu
 :- dynamic board/1.
@@ -93,12 +93,12 @@ save_play(Joueur,Coup) :-
 % IA vs. IA
 game_ia(P1, P2) :-
     board(PL),
-    alpha_beta(1, 5, PL, -200, 200, Coup, P1, _Valeur),!,
+    alpha_beta(1, 6, PL, -200, 200, Coup, P1, _Valeur), !,
     save_play(1, Coup),
     board(NPL),
     display_board(1, NPL),
     not(won),
-    alpha_beta(2, 5, NPL, -200, 200, Coup2, P2, _Valeur2),!,
+    alpha_beta(2, 6, NPL, -200, 200, Coup2, P2, _Valeur2),!,
     save_play(2, Coup2),
     board(NPL2),
     display_board(2, NPL2),
