@@ -7,27 +7,18 @@
 \usepackage{listings}
 \usepackage{color}
 \usepackage{float}
+\usepackage{amsthm}
 
-\definecolor{mygreen}{rgb}{0,0.6,0}
-\definecolor{mygray}{rgb}{0.5,0.5,0.5}
-\definecolor{mymauve}{rgb}{0.58,0,0.82}
-
-\lstset{ %
-  backgroundcolor=\color{white},
+\lstset{
   basicstyle=\footnotesize,
   breakatwhitespace=true,
   breaklines=true,
-  captionpos=b,
-  deletekeywords={...},
-  escapeinside={\%*}{*)},
   frame=single,
   keepspaces=true,
   keywordstyle=\color{blue},
   language=Python,
-  tabsize=2,                       % sets default tabsize to 2 spaces
 }
 
-\newcommand{\url}[1]{\texttt{#1}}
 \newcommand{\code}[1]{\texttt{#1}}
 
 \begin{document}
@@ -92,7 +83,7 @@
 Rapport de projet d'IA41\\
 Université de Technologie de Belfort-Montbeliard
 }
-% 
+
 
 \maketitle
 \newpage
@@ -104,7 +95,7 @@ Université de Technologie de Belfort-Montbeliard
 Ce document présente le jeu de Force 3 (et plus particulièrement son intelligence artificielle) réalisé dans le cadre de l'UV d'IA41 en langage Prolog.
 
 \section{Règles du jeu}
-Édité par \emph{Ravensburger} en 1982, le \emph{force 3} est un mélange entre un jeu de taquin et un tic-tac-toe. Le plateau de jeu est constitué de 3 lignes et 3 colonnes (soit 9 cases en tout). En début de partie, le taquet est placé au centre, et les joueurs placent tour à tour leurs pions. Une fois leurs pions placés, les joueurs peuvent les déplacer.
+Édité par \emph{Ravensburger} à partir de 1982, le \emph{force 3} est un mélange entre un jeu de taquin et un tic-tac-toe. Le plateau de jeu est constitué de 3 lignes et 3 colonnes (soit 9 cases en tout). En début de partie, le taquet est placé au centre, et les joueurs placent tour à tour leurs pions. Une fois leurs pions placés, les joueurs peuvent les déplacer.
 
 \subsection{Mécanismes}
 Chaque joueur effectue à tour de rôle l'un des trois mouvements suivants:
@@ -149,13 +140,15 @@ Au vue des observations précédentes, nous avons choisi d'utiliser un algorithm
 
 \subsection{Fonction d'évaluation}
 \subsubsection{Attribution des points}
-Un plateau est constitué de 3 \emph{lignes} verticales, 3 \emph{lignes} horizontales et de 3 lignes \emph{diagonales}. La fonction d'évaluation assigne un score par ligne en fonction du nombre de pions qui y sont présents:\\
+Un plateau est constitué de 3 \emph{lignes} verticales, 3 \emph{lignes} horizontales et de 3 lignes \emph{diagonales}. La fonction d'évaluation assigne un score par ligne en fonction du nombre de pions qui y sont présents:
+\vspace{1em} % hack
 \begin{itemize}
 	\item Un pion : 1 point
 	\item Deux pions: 5 points
 	\item Trois pions : 100 points.
 \end{itemize}
-Le fait d'affecter une valeur supérieure au double de points d'un pion pour deux pions alignés permet de privilégier ce cas. De plus, attribuer 100 points lorsque trois pions sont alignés influencera fortement l'algorithme à tendre vers la victoire !
+\vspace{1em} % hack
+Le fait d'affecter une valeur supérieure au double de points donnés à un seul pion, pour deux pions alignés, permet de privilégier ce dernier cas. De plus, attribuer 100 points lorsque trois pions sont alignés l'influencera fortement l'algorithme à tendre vers la victoire !
 
 \subsubsection{Objectifs de convergence}
 Cette fonction d'évaluation aura non-seulement tendance à favoriser l'alignement de pions, mais également les positions \emph{stratégiques}, offrant un grand nombre de possibilités de jeu, comme le centre ou les angles.
@@ -182,14 +175,11 @@ Cette fonction d'évaluation aura non-seulement tendance à favoriser l'aligneme
 \subsubsection{Principe}
 Le principe de l'algorithme MiniMax est relativement simple :
 \begin{enumerate}
-\item Détermination de la liste des coups possibles par le joueur courant
-\item Pour chaque coup, détermination de la liste des coups
-      possibles par l'adversaire
-\item Répétition des deux points précédents jusqu'à la profondeur $n$ définie par l'heuristique 
-\item Évaluation des plateaux obtenus
-\item Ces valeurs sont remontées dans les n\oe{}uds de l'arbre de recherche,
-    en sélectionnant le maximum quand c'est un tour du joueur courant,
-    et du minimum si c'est son adversaire.
+\item Détermination de la liste des coups possibles par le joueur courant.
+\item Pour chaque coup, détermination de la liste des coups possibles par l'adversaire.
+\item Répétition des deux points précédents jusqu'à la profondeur $n$ définie par l'heuristique.
+\item Évaluation des plateaux obtenus.
+\item Ces valeurs sont remontées dans les n\oe{}uds de l'arbre de recherche, en sélectionnant le maximum quand c'est un tour du joueur courant, et du minimum si c'est son adversaire.
 \item Finalement, choix de la meilleure branche possible pour le joueur courant.
 \end{enumerate}
 
@@ -197,9 +187,9 @@ Le principe de l'algorithme MiniMax est relativement simple :
 Le fait que le \emph{Force 3} soit un jeu à somme nulle permet d'utiliser la variante \emph{Négamax} du MiniMax, permettant une implémentation simplifiée en posant :
 
 \begin{figure}[H]
-\code{max(a, b) == -min(-a, -b)}
-\centering
-\caption{Simplification}
+    \code{max(a, b) == -min(-a, -b)}
+    \centering
+    \caption{Simplification}
 \end{figure}
   
 \subsubsection{Pseudo-Codes}
@@ -276,39 +266,16 @@ Cette partie présente les choix d'implémentations, comme la représentation de
 la traduction des règles en Prolog, \dots
 
 \subsection{Compatibilité}
-Le projet utilise des prédicats spécifiques a SWI-Prolog, et n'a été testé que sur des versions supérieures à la 5.10. Elles pourrait donc de pas marcher sur des versions précédentes.
+Le projet utilise des prédicats spécifiques a SWI-Prolog, et n'a été testé que sur des versions supérieures à la 5.10. Il pourrait donc de pas marcher sur des versions précédentes.
 
 \subsection{Organisation des fichiers}
-  Un script shell fourni compile le projet
-  en l'ex\'ecutable \texttt{force3}. Bien sûr, le projet peut être
-  \'egalement test\'e en chargeant le programme dans l'interpr\'eteur Prolog:
-
+Le \emph{Makefile} fourni permet de compiler le programme et de le lancer. Le projet est découpé en 5 fichiers:
   \begin{itemize}
-    \item{\texttt{swipl -s force3.pl}}
-    \item{\texttt{consult('force3').} directement dans l'interpr\'eteur.}
-  \end{itemize}
-  
-  Le fractionnement du projet en modules repr\'esente un choix de
-  d\'eveloppement important, tout d'abord en rendant le d\'eveloppement plus
-  ais\'e, facilitant l'ajout de nouveaux pr\'edicats en fonction de leur rôle.
-  Enfin la relecture du code est facilit\'ee pour le relecteur, les labels des
-  pr\'edicats appel\'es d'un module \`a un autre \'etant suffisamment
-  explicites. Voici la liste de ces modules :
-
-  \begin{itemize}
-    \item{\textbf{force3.pl} fichier principal, contenant le pr\'edicat
-                  principal
-                  \emph{force3.} et l'inclusion des autres modules.}
-    \item{\textbf{mod\_regles.pl} contient la base de connaissance du
-                  projet: r\`egles, conditions de victoire...}
-    \item{\textbf{mod\_jeu.pl} contient les pr\'edicats de jeu, qui vont
-                  jouer les coups valid\'es selon les r\`egles en
-                  interaction avec le joeur humain ou l'ia.}
-    \item{\textbf{mod\_eval.pl} contient la fonction
-                  d'\'evaluation et l'algorithme MinMax.}
-    \item{\textbf{mod\_ui.pl} contient des pr\'edicats d'affichage
-                  (plateau, aide, erreurs, \'ecran d'accueil) et
-                  les pr\'edicats d'interaction clavier.}
+    \item \textbf{evaluation.pl} Fonction d'évaluation et algorithme NégaMax avec élagage Alpha/Beta
+    \item \textbf{gui.pl} Interface utilisateur, autant affichage qu'interactions.
+    \item \textbf{jeu.pl} Prédicats des coups.
+    \item \textbf{regles.pl} Règles du jeu et conditions de victoire.
+    \item \textbf{main.pl} Permet de lancer le jeu.
   \end{itemize}
 
 \subsection{Représentation des données}
