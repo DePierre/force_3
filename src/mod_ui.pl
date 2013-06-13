@@ -122,13 +122,14 @@ display_board([C1,C2,C3,C4,C5,C6,C7,C8,C9]):-
 
 % Affiche les coordonnées du plateau
 display_coords([C1,C2,C3,C4,C5,C6,C7,C8,C9]):-
+    write('    _______                         _______'), nl,
     write('    |'),afc(C1),write(' '),afc(C2),write(' '),afc(C3),write('|'),
     write('                         |0 1 2|'),nl,
     write('    |'),afc(C4),write(' '),afc(C5),write(' '),afc(C6),write('|'),
     write('     Coordonnees     --> |3 4 5|'),nl,
     write('    |'),afc(C7),write(' '),afc(C8),write(' '),afc(C9),write('|'),
     write('                         |6 7 8|'),nl,
-    !.
+    write('    -------                         -------'), nl, !.
 
 % Affecte les cases en fonction de leur nature
 afc(X)   :- var(X), write('-').
