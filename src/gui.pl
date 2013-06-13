@@ -1,4 +1,4 @@
-:- module(mod_ui, [init_ui/0, game_ia/2, play/0, ask_id/1]).
+:- module(mod_ui, [init_ui/0, game_ia/2, play/0, ask_id/1, start/1, welcome/0]).
 :- use_module('jeu.pl').
 :- use_module('regles.pl').
 :- use_module('evaluation.pl').
@@ -97,12 +97,12 @@ save_play(Joueur,Coup) :-
 % IA vs. IA
 game_ia(Level1, Level2, LevelIA1, LevelIA2, P1, P2) :-
     board(PL),
-    alpha_beta(1, LevelIA1, PL, -200, 200, Coup, P1, _Valeur), !,
+    alpha_beta(1, 6, PL, -200, 200, Coup, P1, _Valeur), !,
     save_play(1, Coup),
     board(NPL),
     display_board(1, Level1, NPL),
     not(won),
-    alpha_beta(2, LevelIA2, NPL, -200, 200, Coup2, P2, _Valeur2), !,
+    alpha_beta(2, 6, NPL, -200, 200, Coup2, P2, _Valeur2), !,
     save_play(2, Coup2),
     board(NPL2),
     display_board(2, Level2, NPL2),
@@ -132,7 +132,7 @@ play(LastBoard, Level) :-
     ask_placement(PL, Coup),
     save_play(2, Coup),
     board(NPL),
-    display_board(2, -1, NPL),
+    display_board(2, 2, NPL),
     not(won),
     play_ia(LastBoard, Level).
 
@@ -193,3 +193,37 @@ afc(1) :-
     write('o').
 afc(2):-
     write('x').
+
+% Welcome prompt
+welcome :-
+    nl,
+    writeln('Projet Force 3'),
+    writeln('Créé dans le cadre du cours IA41 (UTBM)'), nl,
+    writeln('-----Auteurs------------------'),
+    writeln('|\tJulien Voisin        |'),
+    writeln('|\tTao Sauvage          |'),
+    writeln('|\tRobin Faury          |'),
+    writeln('------------------------------'),
+    nl.
+
+% Menu pour la difficulté des IA
+level_ia :-
+    menu_ia(1, Level1),
+    menu_ia(2, Level2),
+    tty_clear,
+    game_ia(Level1, Level2).
+
+menu_ia(ID, Level) :-
+    write('-----Niveau IA '), write(ID), writeln('--------------'),
+    writeln('|  0.\tFacile               |'),
+    writeln('|  1.\tMoyen                |'),
+    writeln('|  2.\tDifficile            |'),
+    writeln('------------------------------'),
+    ask_id(Level).
+
+% Lance en fonction du choix du joueur
+start(0) :-
+    play.
+start(1) :-
+    level_ia.
+start(_) :- !.
