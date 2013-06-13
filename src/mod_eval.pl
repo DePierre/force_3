@@ -1,137 +1,98 @@
-:- module(mod_eval,[eval_nb_coups/3,eval_plateau/2, alpha_beta/7]).
+:- module(mod_eval,[eval_nb_move/3,eval_bord/2, alpha_beta/7]).
 :- use_module('mod_regles.pl').
 :- use_module('mod_jeu.pl').
 :- use_module(library(lists)).
 
-/** <module> Evaluation
 
-     Ce module permet d'évaluer la "valeur" d'un plateau donné. Cette valeur
-     indique pour quel joueur une situation donnée est la plus favorable.
-
-     @author Romain Boissat, Frédéric Rechtenstein, Maxime Ripard
-     @license GPL
-*/
+% Le module mod_eval permet de calculer la valeur optimale pour un joueur
 
 
-/**  eval_nb_coup(+JR,+PL,?NbC) is det
 
-    Vrai si NbC est le nombre de coups que peut faire le joueur JR sur le
-    plateau de jeuPL.
-*/
-eval_nb_coups(JR,PL,NbC) :- findall(_,coup(JR,PL,_), Bag), length(Bag,NbC).
-
-/**  eval_plateau(+Pl, ?Valeur) is det
-
-   Determine la "valeur" du plateau Pl.
-   Si la valeur est positive, le joueur 1 est avantagé par rapport au
-   joueur 2, et vice versa.
-   Valeur = 100 quand le joueur 1 gagne et -100 quand le joueur 2 gagne.
-*/
-eval_plateau(PL, 100)   :- win(1, PL), !. % JR 1 gagne
-eval_plateau(PL, -100)  :- win(2, PL), !. % JR 2 gagne
-
-eval_plateau(PL, V) :-  % cas général
-    eval_score(1, PL, ScoreJ1),
-    eval_score(2, PL, ScoreJ2),
-    V is ScoreJ1 - ScoreJ2.     % score du joueur 1 - score du joueur 2
+% eval_nb_move(+J, +P, ?NbM)
+% retourne le nombre de coup NbC du joueur J pour le plateau P
+eval_nb_coups(J,P,NbM) :- findall(_,deplacement(J,P,_), ListeMove), length(ListeMove,NbM).
 
 
-/**  eval_score(+JR, +Pl, ?score) is det
 
-    Vrai quand Score est le score du joueur JR sur le plateau PL.
-    Le score est calculé selon la méthode décrite dans le rapport.
-*/
-eval_score(JR, PL, Score) :-
-    maplist(row(PL), [1,2,3], Rows),
-    maplist(compte_points(JR), Rows, PR),
-    sumlist(PR, PtsRows),
+% eval_bord(+P, ?Value)
+% Permet de déterminer l'avantage d'un des deux joueurs. Si la valeur de retour est positif, alors le joueur 1 à l'avantage. Et vise versa.
+% La valeur maximale est abs(100).
+eval_bord(P, 100)   :- win(1, P), !. % Victoire du joueur 1
+eval_bord(P, -100)  :- win(2, P), !. % Victoire du joueur 2
 
-    maplist(column(PL), [1,2,3], Cols),
-    maplist(compte_points(JR), Cols, PC),
-    sumlist(PC, PtsCols),
-
-    diagonal(PL, 1, Prof1), compte_points(JR, Prof1, PtsProf1),
-    diagonal(PL, 2, Prof2), compte_points(JR, Prof2, PtsProf2),
-
-    Score is PtsRows + PtsCols + PtsProf1 + PtsProf2.
+eval_bord(P, V) :-
+    eval_value(1, P, ValueJ1),
+    eval_value(2, P, ValueJ2),
+    V is ValueJ1 - ValueJ2.
 
 
-/**   compte_points(+JR, +Sequence, ?Points) is det
+% eval_value(+J, +P, ?Value)
+% Retourne la valeur pour le joueur J
+eval_value(J, P, Value) :-
+    maplist(row(P), [1,2,3], Rows),
+    maplist(compute_points(J), Rows, PRows),
+    sumlist(PRows, PtsRows),
 
-    Vrai si Points est le nombre obtenu par le joueur JR sur la liste Sequence.
-    En supposant que Sequence soit une liste de case alignés (ligne, colonne
-    ou diagonale).
-*/
-compte_points(JR, Sequence, Points) :-
-     include(=:=(JR), Sequence, Filtered),
+    maplist(column(P), [1,2,3], Cols),
+    maplist(compute_points(J), Cols, PCols),
+    sumlist(PCols, PtsCols),
+
+    diagonal(P, 1, Prof1), compute_points(J, Prof1, PtsProf1),
+    diagonal(P, 2, Prof2), compute_points(J, Prof2, PtsProf2),
+
+    Value is PtsRows + PtsCols + PtsProf1 + PtsProf2.
+
+
+% compute_points(+J, +List, ?Score)
+% Distribut un score en fonction du nombre de pionts allignés.
+compute_points(J, List, Score) :-
+     include(=:=(JR), List, Filtered),
      length(Filtered, Len),
-     points(Len, Points).
+     scores(Len, Score).
 
 
-/**  points(+NbPions, ?Points) is det
-
-    Vrai si le nombre de pions alignés est associé au nombre de points.
-    Permet de calculer le nombre de points pour un nombre de pions alignés.
-*/
-points(0,0).
-points(1,1).
-points(2,5).
+% scores(+NbPions, ?Scores)
+% Retourne le score associé au nombre de pionts alignés.
+scores(0,0).
+scores(1,1).
+scores(2,3).
 
 
-/**  alpha_beta(+JR, +Prof, +PL, +Alpha, +Beta, ?Coup, ?Valeur)
+% alpha_beta(+J, +Depth, +P, +Alpha, +Beta, ?Move, ?Value)
+% Algorithme d'élagage utilisant la méthode alpha-beta. Depth est la profondeur de recherche avec Value la valeur du plateau lorsque le coup est joué.
+alpha_beta(_J,0,P,_Alpha,_Beta,_Move,Value) :-
+    % On s arrête lorsqu on arrive à une depth égale à 0.
+   eval_bord(P,Value),!.
 
-    Vrai si le coup Coup est le meilleur coup à jouer pour le joueur JR
-    en partant du plateau PL.
-    La détermination du meilleur coup se fait en utilisant l'algorithme
-    négamax avec élégage alpha-beta. Prof est la profondeur de la recherche et
-    Valeur est la "valeur" du nouveau plateau qui sera obtenu si le coup est
-    joué. A utiliser avec les parametres Alpha = -infini et Beta = +infini.
-*/
-alpha_beta(_JR,0,PL,_Alpha,_Beta,_Coup,Valeur) :-
-    % Quand la profondeur est 0 : stop ! retourner la valeur du plateau
-   eval_plateau(PL,Valeur),!.
-%    spy(JR,PL,Valeur).
-
-alpha_beta(JR,Prof,PL,Alpha,Beta,Coup,Valeur) :-
+alpha_beta(J,Depth,P,Alpha,Beta,Move,Value) :-
    Prof > 0,
-   findall(X,move(JR,PL,X,_),Coups),
+   findall(X,move(J,P,X,_),Moves),
    Alpha1 is -Beta, % max/min
    Beta1 is -Alpha,
-   Prof1 is Prof-1,
-   cherche_meilleur(JR,Coups,PL,Prof1,Alpha1,Beta1,nil,(Coup,Valeur)),!.
+   Depth1 is Depth-1,
+   find_best(J,Moves,P,Depth1,Alpha1,Beta1,nil,(Move,Value)),!.
 
 
-
-/**  cherche_meilleur(+JR,+Coups,+PL,+Prof,+Alpha,+Beta,+R,?MeilleurCoup)
-
-    Cherche le meilleur coup MeilleurCoup à jouer dans la liste des coups Coups.
-
-    @see alpha_beta
-*/
-cherche_meilleur(JR,[Coup|Coups],PL,Prof,Alpha,Beta,R,MeilleurCoup) :-
-   move(JR,PL,Coup,NP),
-   get_opponent(JR,OtherJR),
-   alpha_beta(OtherJR,Prof,NP,Alpha,Beta,_OtherCoup,Valeur),
-   Valeur1 is -Valeur,
-   elague(JR,Coup,Valeur1,Prof,Alpha,Beta,Coups,PL,R,MeilleurCoup),!.
-cherche_meilleur(_JR,[],_PL,_Prof,Alpha,_Beta,Coup,(Coup,Alpha)).
+% find_best(+J,+Moves,+P,+Depth,+Alpha,+Beta,+R,?BestMove)
+% Retourne le meilleur coup à jouer.
+find_best(J,[Move|Moves],P,Depth,Alpha,Beta,R,BestMove) :-
+   mouv(J,P,Move,NP),
+   autre_joueur(J,OtherJR),
+   alpha_beta(OtherJR,Depth,NP,Alpha,Beta,_OtherCoup,Value),
+   Value1 is -Value,
+   elague(J,Move,Value1,Depth,Alpha,Beta,Moves,P,R,BestMove),!.
+find_best(_J,[],_P,_Depth,Alpha,_Beta,Move,(Move,Alpha)).
 
 
-/**  elague(+JR,+Coup,+Valeur,+Prof,+Alpha,+Beta,+Coups,+PL,_R,?MeilleurCoup)
+% elague(+J,+Move,+Value,+Depth,+Alpha,+Beta,+Moves,+P,+_R,+BestMove)
+% Permet d'élaguer l'abre de recherche en fonction d'alpha et beta.
+% La recherche s'arrête dans une branche lorsqu'elle sort des bornes.
+elague(J,Move,Value,Depth,Alpha,Beta,Moves,P,_R,BestMove) :-
+   Alpha < Value, Value < Beta, !,
+   find_best(J,Moves,P,Depth,Value,Beta,Move,BestMove),!.
+elague(J,_Move,Value,Depth,Alpha,Beta,Moves,P,R,BestMove) :-
+   Value =< Alpha, !,
+   find_best(J,Moves,P,Depth,Alpha,Beta,R,BestMove),!.
+elague(_J,Move,Value,_Depth,_Alpha,Beta,_Moves,_P,_R,(Move,Value)) :-
+   Value >= Beta, !.
 
-    Prédicat d'élagage en alpha-beta. Stope la recheche dans une branche de
-    l'arbre quand elle ne peut contribuer au calcul de la valeur de la dite
-    branche.
-
-    @see alpha_beta
-*/
-elague(JR,Coup,Valeur,Prof,Alpha,Beta,Coups,PL,_R,MeilleurCoup) :-
-   Alpha < Valeur, Valeur < Beta, !,
-   cherche_meilleur(JR,Coups,PL,Prof,Valeur,Beta,Coup,MeilleurCoup),!.
-elague(JR,_Coup,Valeur,Prof,Alpha,Beta,Coups,PL,R,MeilleurCoup) :-
-   Valeur =< Alpha, !,
-   cherche_meilleur(JR,Coups,PL,Prof,Alpha,Beta,R,MeilleurCoup),!.
-elague(_JR,Coup,Valeur,_Prof,_Alpha,Beta,_Coups,_PL,_R,(Coup,Valeur)) :-
-   Valeur >= Beta, !.
-
-% EOF
