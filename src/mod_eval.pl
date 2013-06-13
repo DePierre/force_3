@@ -56,12 +56,13 @@ score(2, 5).
 
 
 % alpha_beta(+J, +Depth, +P, +Alpha, +Beta, ?Move, ?Value)
-% Algorithme d'élagage utilisant la méthode alpha-beta. Depth est la profondeur de recherche avec Value la valeur du plateau lorsque le coup est joué.
+% Algorithme d'élagage utilisant la méthode alpha-beta.
+% Depth est la profondeur de recherche avec Value la valeur du plateau
+% lorsque le coup est joué.
 alpha_beta(_J, 0, P, _Alpha, _Beta, _Move, Value) :-
     eval_bord(P, Value), !.
 
 alpha_beta(J, Depth, P, Alpha, Beta, Move, Value) :-
-    Depth > 0,
     findall(X, move(J, P, X, _), Moves),
     Alpha1 is -Beta, % max/min
     Beta1 is -Alpha,
