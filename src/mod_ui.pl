@@ -1,4 +1,4 @@
-:- module(mod_ui, [init_ui/0, game_ia/0, play_ia/0, play/0, welcome/0]).
+:- module(mod_ui, [init_ui/0, game_ia/2, play_ia/1, play/0, welcome/0]).
 :- use_module('mod_jeu.pl').
 :- use_module('mod_regles.pl').
 :- use_module('mod_eval.pl').
@@ -91,39 +91,41 @@ save_play(Joueur,Coup) :-
     assert(board(B1)).
 
 % IA vs. IA
-game_ia :-
+game_ia(P1, P2) :-
     board(PL),
-    alpha_beta(1, 6, PL, -200, 200, Coup, _Valeur),!,
+    alpha_beta(1, 6, PL, -200, 200, Coup, P1, _Valeur),!,
+    write('First IA '), writeln(PL),
     save_play(1, Coup),
     board(NPL),
     display_board(NPL),
     not(won),
-    alpha_beta(2, 5, NPL, -200, 200, Coup2, _Valeur2),!,
+    alpha_beta(2, 6, NPL, -200, 200, Coup2, P2, _Valeur2),!,
     save_play(2, Coup2),
     board(NPL2),
     display_board(NPL2),
+    write('Second IA '), writeln(NPL2),
     not(won),
-    game_ia.
+    game_ia(PL, NPL).
 
 % Fait jouer l'IA
-play_ia :-
+play_ia(P1) :-
     board(PL),
-    alpha_beta(1, 1, PL, -200, 200, Coup, _Valeur), !,
+    alpha_beta(1, 2, PL, -200, 200, Coup, P1, _Valeur), !,
     save_play(1, Coup),
     board(NPL),
     display_board(NPL),
     not(won),
-    play.
+    play(PL).
 
 % Demande au joueur de jouer
-play :-
+play(LastBoard) :-
     board(PL),
     ask_placement(PL, Coup),
     save_play(2, Coup),
     board(NPL),
     display_board(NPL),
     not(won),
-    play_ia.
+    play_ia(LastBoard).
 
 % Vérifie si le joueur a gagné et propose de recommencer.
 won :-
