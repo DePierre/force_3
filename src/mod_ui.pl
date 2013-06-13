@@ -91,7 +91,8 @@ play_ia :-
     save_play(1,Coup),
     board(NPL),
     display_board(NPL),
-    won.
+    not(won),
+    play.
 
 % Demande au joueur de jouer
 play :-
@@ -100,7 +101,8 @@ play :-
     save_play(2,Coup),
     board(NPL),
     display_board(NPL),
-    won.
+    not(won),
+    play_ia.
 
 % Vérifie si le joueur a gagné et propose de recommencer.
 won :-
@@ -144,4 +146,4 @@ welcome :-
     writeln('IA vs. IA :\t game_ia.'),
     nl.
 
-% EOF
+:- init_ui.

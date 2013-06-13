@@ -110,7 +110,7 @@ alpha_beta(JR,Prof,PL,Alpha,Beta,Coup,Valeur) :-
 */
 cherche_meilleur(JR,[Coup|Coups],PL,Prof,Alpha,Beta,R,MeilleurCoup) :-
    move(JR,PL,Coup,NP),
-   autre_joueur(JR,OtherJR),
+   get_opponent(JR,OtherJR),
    alpha_beta(OtherJR,Prof,NP,Alpha,Beta,_OtherCoup,Valeur),
    Valeur1 is -Valeur,
    elague(JR,Coup,Valeur1,Prof,Alpha,Beta,Coups,PL,R,MeilleurCoup),!.
