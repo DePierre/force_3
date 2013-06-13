@@ -111,8 +111,8 @@ game_ia(Level1, Level2, LevelIA1, LevelIA2, P1, P2) :-
 
 game_ia(Level1, Level2):-
     empty_board(Board),
-    LevelIA1 is (Level1 + 2) * 3,
-    LevelIA2 is (Level2 + 2) * 3,
+    LevelIA1 is (Level1 + 1) * 2,
+    LevelIA2 is (Level2 + 1) * 2,
     game_ia(Level1, Level2, LevelIA1, LevelIA2, Board, Board).
 
 % Fait jouer l'IA
