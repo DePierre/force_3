@@ -11,10 +11,11 @@
 
 \usetheme{Luebeck}
 \setbeamertemplate{navigation symbols}{}
-
 \title{IA41 - Force 3}
+\subtitle{Soutenance de projet}
 \author{Tao Sauvage \and Julien Voisin \and Robin Faury}
 \institute[UTBM]{Université de Technologie de Belfort Montbéliard}
+\logo{\includegraphics[width=.05\textwidth]{./pix/sym_plateau}}
 
 \newcommand{\link}[2] {
 \item[#1] \scriptsize #2 \normalsize
@@ -52,7 +53,7 @@
 
 \begin{frame}{Modélisation de la partie}
   \begin{figure}
-    \includegraphics[width=0.9\textwidth]{./pix/arbre}
+    \includegraphics[width=\textwidth]{./pix/arbre}
     \centering
     \caption{Un arbre représentant une partie}
   \end{figure}
@@ -83,7 +84,7 @@
     \begin{columns}
         \begin{column}[l]{0.5\textwidth}
             \begin{figure}
-                \includegraphics[width=1.1\textwidth]{./pix/evaluation}
+                \includegraphics[width=1.05\textwidth, height=4.5cm]{./pix/evaluation}
                 \centering
                 \caption{Evaluation d'un plateau}
             \end{figure}
@@ -91,9 +92,9 @@
         
         \begin{column}[r]{0.5\textwidth}
             \begin{description}
-                \item[Joueur Rouge] $1 + 1 + 1 = 3$
-                \item[Joueur Bleu] $5 + 1 + 1 + 1 = 8$
-                \item[Évaluation pour Bleu] 8 -3 = 5
+                \item[Rouge:] $1 + 1 + 1 = 3$
+                \item[Bleu:] $5 + 1 + 1 + 1 = 8$
+                \item[Évaluation Bleu:] $8 -3 = 5$
             \end{description}
         \end{column}
 
@@ -140,20 +141,19 @@
 \end{frame}
 
 \section{Choix d’implémentation}
-%FIXME
     \begin{frame}{Modules}
-        \begin{description}
-            \item[mod\_regles :] règles du jeu, conditions de victoire.
-            \item[mod\_jeu :] prédicat de jeu
-            \item[mod\_eval :] évaluation d'un plateau, algo négamax
-            \item[mod\_ui :] Interface utilisateur
-            \item[force3 :] Fichier principal
-        \end{description}
+  \begin{itemize}
+    \item \textbf{evaluation.pl} Évaluation, NégaMax, Alpha/Beta
+    \item \textbf{gui.pl} Affichages et interactions.
+    \item \textbf{jeu.pl} Prédicats des coups.
+    \item \textbf{regles.pl} Règles du jeu et conditions de victoire.
+    \item \textbf{main.pl} Lance le jeu.
+  \end{itemize}
     \end{frame}
 
 \begin{frame}{Représentation des données}
     \begin{block}{Coup}
-          Liste de la forme \texttt{[Case départ, Case arrivée, Id]}
+          Liste: \texttt{[Case départ, Case arrivée, Id]}
     \end{block}
     \begin{block}{Plateau}
         Liste de neuf entiers $\in \left\{-1, 0, 1, 2\right\}$, avec:
@@ -191,7 +191,7 @@
         \begin{itemize}
             \itemsep2em
 	        \item L'IA est imbattable !
-	        \item Réponse instantané pour un récursion de 3.
+	        \item Réponse instantané pour un récursion de 4.
 	        \item Quelques secondes pour une récursion de 10.
         \end{itemize}
         \end{column}
