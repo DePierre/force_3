@@ -1,19 +1,16 @@
-\documentclass{beamer}
+\documentclass[compress, 12pt]{beamer}
+
+\let\Tiny=\tiny % fuck you beamer !
+
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage[french]{babel}
 \usepackage{graphicx}
-\usepackage{multicol}
+\usepackage{soul}
+\usepackage{palatino}
 
 \usetheme{Luebeck}
-%\usecolortheme{beetle}
-% \usecolortheme{beaver}
-% \usecolortheme{albatross}
-% \usecolortheme{crane}
-% \usecolortheme{fly}
-% \usecolortheme{seagull}
-% \usecolortheme{horse}
-% \usecolortheme{whale}
-
+\setbeamertemplate{navigation symbols}{}
 
 \title{IA41 - Force 3}
 \author{Tao Sauvage \and Julien Voisin \and Robin Faury}
@@ -24,10 +21,8 @@
 }
 
 
-\AtBeginSection[]
-{
-  \begin{frame}<beamer>
-    \frametitle{Plan}
+\AtBeginSection{
+  \begin{frame}{Plan}
     \tableofcontents[currentsection,currentsubsection]
   \end{frame}
 }
@@ -65,16 +60,23 @@
 
 
 \begin{frame}{Évaluation d'un plateau}
-    \begin{block}{Fonction d'évaluation}
-        $$-100 \leq evaluation(plateau) \leq 100$$
-    \end{block}
-    \begin{block}{Pondération en fonction du nombre de pions alignés:}
-        \begin{description}
-            \item[1 pion seul:] 1 point 
-            \item[2 pions alignés:] 5 point
-            \item[3 pions alignés:] 100 points
-        \end{description}
-    \end{block}
+    \begin{columns}
+        \begin{column}{.2\textwidth}
+            \includegraphics[width=\textwidth]{./pix/sym_plateau}
+        \end{column}
+        \begin{column}{.6\textwidth}
+            \begin{block}{Fonction d'évaluation}
+                $$-100 \leq evaluation(plateau) \leq 100$$
+            \end{block}
+            \begin{block}{Pondération en fonction du nombre de pions alignés:}
+                \begin{description}
+                    \item[1 pion seul:] 1 point 
+                    \item[2 pions alignés:] 5 point
+                    \item[3 pions alignés:] 100 points
+                \end{description}
+            \end{block}
+        \end{column}
+    \end{columns}
 \end{frame}
 
 \begin{frame}{Évaluation d'un plateau : Exemple}
@@ -108,12 +110,33 @@
 
 
 \begin{frame}{Algorithme utilisé}
-  %\begin{figure}
-    %FIXME
-    %\includegraphics[height=0.7\textheight]{pics/alphabeta}
-    %\centering
-    %\caption{variante négamax du minimax avec élagage $\alpha\beta$}
-  %\end{figure}
+  \begin{figure}
+    \includegraphics[width=\textwidth]{pix/minimax}
+    \centering
+    \caption{MiniMax}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Algorithme utilisé}
+  \begin{figure}
+    \includegraphics[width=\textwidth]{pix/minimax}
+    \centering
+    \caption{\st{Minimax} Négamax}
+  \end{figure}
+  \begin{center}
+  MIN = - MAX
+  \end{center}
+\end{frame}
+
+\begin{frame}{Algorithme utilisé}
+  \begin{figure}
+    \includegraphics[height=0.6\textheight]{pix/alphabeta}
+    \centering
+    \caption{
+        \st{Minimax}
+        \st{Negamax}
+        Négamax avec élagage $\alpha\beta$}
+  \end{figure}
 \end{frame}
 
 \section{Choix d’implémentation}
@@ -144,25 +167,47 @@
     \end{block}
 \end{frame}
 
-%     \begin{frame}{Modules}
-%         \begin{description}
-%             \item[coup(+JR, +PL, ?Coups)] Trouver les coups possibles.
-%             \item[mod\_jeu :] prédicat de jeu
-%             \item[mod\_eval :] évaluation d'un plateau, algo négamax
-%             \item[mod\_ui :] Interface utilisateur
-%             \item[force3 :] Fichier principal
-%         \end{description}
-%     \end{frame}
-
-
 \section{Résultats}
 
-\begin{frame}{Utilité de l'élagage $\alpha\beta$}
-Sans élagage, une profondeur de 10 fait exploser les calculs.
+\begin{frame}{Utilité de l'élagage Alpha/Beta}
+    \begin{columns}
+        \begin{column}{.2\textwidth}
+            \includegraphics[width=1.3\textwidth]{./pix/sym_cut}
+        \end{column}
+        \begin{column}{.6\textwidth}
+            \begin{center}
+                Sans élagage, une profondeur de 10 fait exploser les calculs.
+            \end{center}
+        \end{column}
+    \end{columns}
 \end{frame}
 
+\begin{frame}{Efficacité}
+    \begin{columns}
+        \begin{column}{.2\textwidth}
+            \includegraphics[width=1.3\textwidth]{./pix/sym_brain}
+        \end{column}
+        \begin{column}{.6\textwidth}
+        \begin{itemize}
+            \itemsep2em
+	        \item L'IA est imbattable !
+	        \item Réponse instantané pour un récursion de 3.
+	        \item Quelques secondes pour une récursion de 10.
+        \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
 
 \begin{frame}{Questions}
-Questions ?
+    \begin{columns}
+        \begin{column}{.2\textwidth}
+            \includegraphics[width=1.3\textwidth]{./pix/sym_question}
+        \end{column}
+        \begin{column}{.6\textwidth}
+            \begin{center}
+                \huge Questions ?
+            \end{center}
+        \end{column}
+    \end{columns}
 \end{frame}
 \end{document}

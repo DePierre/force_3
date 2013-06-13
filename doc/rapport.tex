@@ -149,7 +149,7 @@ Au vue des observations précédentes, nous avons choisi d'utiliser un algorithm
 
 \subsection{Fonction d'évaluation}
 \subsubsection{Attribution des points}
-Un plateau est constitué de 3 \emph{lignes} verticales, 3 \emph{lignes} horizontales et de 3 lignes \emph{diagonales}. La fonction d'évaluation assigne un score par ligne en fonction du nombre de pions qui y sont présents:
+Un plateau est constitué de 3 \emph{lignes} verticales, 3 \emph{lignes} horizontales et de 3 lignes \emph{diagonales}. La fonction d'évaluation assigne un score par ligne en fonction du nombre de pions qui y sont présents:\\
 \begin{itemize}
 	\item Un pion : 1 point
 	\item Deux pions: 5 points
@@ -252,7 +252,7 @@ int negaMax( int depth ) {
 \caption{Pseudo-code simplifié de l'algorithme du Négamax}
 \end{figure}
   
-\subsubsection{Problèmes soulevés}
+\subsubsection{Élagage Alpha/Beta}
 Un des soucis d'un tel algorithme est qu'il \emph{requiert beaucoup de place}. En effet, il va parcourir toutes les branches de l'arbre de recherche, alors que ça n'est pas forcément nécessaire. On peut l'optimiser à l'aide d'un élagage de type $\alpha\beta$ (Alpha/Beta), qui permet de réduire manière conséquente le nombre de n\oe{}ds parcourus, sans pour autant changer quoi que ce soit au résultat final.
 \\\\
 Sur la figure 6 on peut constater que certaines branches sont superflues. Par exemple, le n\oe{}d de profondeur 1 à droite (5) va prendre la valeur minimum de ses fils. Sachant qu'un 5 est présent, on peut se permettre d'élaguer la branche de droite à partir du n\oe{}d 8, de profondeur 2, puisque 5 est inférieur à 8.
@@ -269,7 +269,7 @@ Sur la figure 6 on peut constater que certaines branches sont superflues. Par ex
     \includegraphics[width=.8\textwidth]{./pix/alphabeta}
     \caption{Min-max avec élagage $\alpha\beta$}
 \end{figure}
-  \newpage
+\newpage
 
 \section{Implémentation}
 Cette partie présente les choix d'implémentations, comme la représentation des données, l'interface utilisateur,
