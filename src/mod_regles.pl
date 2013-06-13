@@ -1,5 +1,5 @@
 :- module(mod_regles, [win/2, taquin_for/2, taquin2_for/3, get_neighbour/2,
-                      get_opponent/2, row/3, column/3, diagonal/3, nbp/3,
+                      get_opposed/2, row/3, column/3, diagonal/3, nbp/3,
                       deplacement/3]).
 
 % Trois pions alignés sur une ligne
@@ -99,15 +99,15 @@ get_neighbour(8,4).
 get_neighbour(8,5).
 get_neighbour(8,7).
 
-% Retourne l'adversaire
-get_opponent(0, 6).
-get_opponent(1, 7).
-get_opponent(2, 8).
-get_opponent(3, 5).
-get_opponent(5, 3).
-get_opponent(6, 0).
-get_opponent(7, 1).
-get_opponent(8, 2).
+% Retourne la case opposée
+get_opposed(0, 6).
+get_opposed(1, 7).
+get_opposed(2, 8).
+get_opposed(3, 5).
+get_opposed(5, 3).
+get_opposed(6, 0).
+get_opposed(7, 1).
+get_opposed(8, 2).
 
 % Unifie la séquence [E1, E2, E3] avec la Ième ligne du plateau PL
 row(PL, I, [E1, E2, E3]) :-
