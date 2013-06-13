@@ -131,7 +131,7 @@ play(LastBoard, Level) :-
     ask_placement(PL, Coup),
     save_play(2, Coup),
     board(NPL),
-    display_board(2, 2, NPL),
+    display_board(2, -1, NPL),
     not(won),
     play_ia(LastBoard, Level).
 
@@ -168,7 +168,7 @@ display_board(J, -1, [C1, C2, C3, C4, C5, C6, C7, C8, C9]):-
     write('     _____'), nl,
     write('    |'), afc(C1), write(' '), afc(C2), write(' '), afc(C3), write('|'), nl,
     write(' '), write(J),
-    write('  |'), afc(C4), write(' '), afc(C5), write(' '), afc(C6), write('|'), nl,
+    write('  |'), afc(C4), write(' '), afc(C5), write(' '), afc(C6), write('|\tJoueur'), nl,
     write('    |'), afc(C7), write(' '), afc(C8), write(' '), afc(C9), write('|'), nl,
     write('     -----'), nl, nl.
 
