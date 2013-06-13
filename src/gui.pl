@@ -1,4 +1,4 @@
-:- module(mod_ui, [init_ui/0, game_ia/2, play_ia/1, play/0, welcome/0]).
+:- module(mod_ui, [init_ui/0, game_ia/0, play/0, welcome/0]).
 :- use_module('jeu.pl').
 :- use_module('regles.pl').
 :- use_module('evaluation.pl').
@@ -13,7 +13,7 @@ init_ui:-
     assert(board(P)).
 
 % Demande un coup à l'utilisateur
-ask_placement(PL, [C1,C2,ID]) :-
+ask_placement(PL, [C1, C2, ID]) :-
     display_coords(PL), nl,
     writeln('Choix disponibles :'),
     writeln('\t0.\tPoser un pion'),
@@ -93,39 +93,51 @@ save_play(Joueur,Coup) :-
 % IA vs. IA
 game_ia(P1, P2) :-
     board(PL),
-    alpha_beta(1, 6, PL, -200, 200, Coup, P1, _Valeur),!,
-    write('First IA '), writeln(PL),
+    alpha_beta(1, 6, PL, -200, 200, Coup, P1, _Valeur), !,
     save_play(1, Coup),
     board(NPL),
-    display_board(NPL),
+    display_board(1, NPL),
     not(won),
     alpha_beta(2, 6, NPL, -200, 200, Coup2, P2, _Valeur2),!,
     save_play(2, Coup2),
     board(NPL2),
-    display_board(NPL2),
-    write('Second IA '), writeln(NPL2),
+    display_board(2, NPL2),
     not(won),
     game_ia(PL, NPL).
 
+game_ia :-
+    empty_board(Board),
+    game_ia(Board, Board).
+
 % Fait jouer l'IA
-play_ia(P1) :-
+play_ia(P1, Level) :-
     board(PL),
-    alpha_beta(1, 2, PL, -200, 200, Coup, P1, _Valeur), !,
+    Level1 is (Level + 1) * 2,
+    alpha_beta(1, Level1, PL, -200, 200, Coup, P1, _Valeur), !,
     save_play(1, Coup),
     board(NPL),
-    display_board(NPL),
+    display_board(1, NPL),
     not(won),
-    play(PL).
+    play(PL, Level).
 
 % Demande au joueur de jouer
-play(LastBoard) :-
+play(LastBoard, Level) :-
     board(PL),
     ask_placement(PL, Coup),
     save_play(2, Coup),
     board(NPL),
-    display_board(NPL),
+    display_board(2, NPL),
     not(won),
-    play_ia(LastBoard).
+    play_ia(LastBoard, Level).
+
+play :-
+    writeln('Niveau de l\'IA :'),
+    writeln('\t0.\tFacile'),
+    writeln('\t1.\tMoyen'),
+    writeln('\t2.\tDifficile'),
+    ask_id(Level),
+    empty_board(Board),
+    play(Board, Level).
 
 % Vérifie si le joueur a gagné et propose de recommencer.
 won :-
@@ -135,10 +147,10 @@ won :-
     init_ui, !.
 
 % Affiche le plateau de jeu
-display_board([C1, C2, C3, C4, C5, C6, C7, C8, C9]):-
+display_board(J, [C1, C2, C3, C4, C5, C6, C7, C8, C9]):-
     write('    _______'), nl,
     write('    |'), afc(C1), write(' '), afc(C2), write(' '), afc(C3), write('|'), nl,
-    write('    |'), afc(C4), write(' '), afc(C5), write(' '), afc(C6), write('|'), nl,
+    write(' '), write(J), write('  |'), afc(C4), write(' '), afc(C5), write(' '), afc(C6), write('|'), nl,
     write('    |'), afc(C7), write(' '), afc(C8), write(' '), afc(C9), write('|'), nl,
     write('    -------'), nl, nl.
 
